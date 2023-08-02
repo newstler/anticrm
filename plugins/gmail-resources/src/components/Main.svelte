@@ -15,7 +15,7 @@
 -->
 <script lang="ts">
   import contact, { Channel, Contact, getName } from '@hcengineering/contact'
-  import { employeeByIdStore } from '@hcengineering/contact-resources'
+  import { collaboratorByIdStore } from '@hcengineering/contact-resources'
   import { getCurrentAccount } from '@hcengineering/core'
   import { Message, SharedMessage } from '@hcengineering/gmail'
   import { NotificationClientImpl } from '@hcengineering/notification-resources'
@@ -88,7 +88,7 @@
   $: message &&
     channel &&
     object &&
-    convertMessage(object, channel, message, $employeeByIdStore).then((p) => (currentMessage = p))
+    convertMessage(object, channel, message, $collaboratorByIdStore).then((p) => (currentMessage = p))
 </script>
 
 {#if channel && object}

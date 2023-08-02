@@ -13,8 +13,8 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import contact, { EmployeeAccount, getName } from '@hcengineering/contact'
-  import { employeeByIdStore } from '@hcengineering/contact-resources'
+  import contact, { PersonAccount, getName } from '@hcengineering/contact'
+  import { collaboratorByIdStore } from '@hcengineering/contact-resources'
   import { Ref } from '@hcengineering/core'
   import { createQuery } from '@hcengineering/presentation'
   import { Request } from '@hcengineering/request'
@@ -26,14 +26,14 @@
 
   export let value: Request
 
-  let account: EmployeeAccount | undefined
-  $: employee = account && $employeeByIdStore.get(account.employee)
+  let account: PersonAccount | undefined
+  $: employee = account && $collaboratorByIdStore.get(account.person)
 
   const query = createQuery()
 
   $: query.query(
-    contact.class.EmployeeAccount,
-    { _id: value.tx.modifiedBy as Ref<EmployeeAccount> },
+    contact.class.PersonAccount,
+    { _id: value.tx.modifiedBy as Ref<PersonAccount> },
     (res) => {
       ;[account] = res
     },

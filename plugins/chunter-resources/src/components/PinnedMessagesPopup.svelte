@@ -1,7 +1,7 @@
 <script lang="ts">
   import chunter, { ChunterMessage } from '@hcengineering/chunter'
-  import { Employee, EmployeeAccount, getName } from '@hcengineering/contact'
-  import { Avatar, employeeAccountByIdStore, employeeByIdStore } from '@hcengineering/contact-resources'
+  import { Collaborator, Person, PersonAccount, getName } from '@hcengineering/contact'
+  import { Avatar, personAccountByIdStore, collaboratorByIdStore } from '@hcengineering/contact-resources'
   import { IdMap, Ref, Space } from '@hcengineering/core'
   import { MessageViewer, createQuery } from '@hcengineering/presentation'
   import { IconClose } from '@hcengineering/ui'
@@ -34,19 +34,19 @@
 
   function getEmployee (
     message: ChunterMessage,
-    employeeAccounts: IdMap<EmployeeAccount>,
-    employees: IdMap<Employee>
-  ): Employee | undefined {
-    const acc = employeeAccounts.get(message.createBy as Ref<EmployeeAccount>)
+    employeeAccounts: IdMap<PersonAccount>,
+    employees: IdMap<Collaborator>
+  ): Person | undefined {
+    const acc = employeeAccounts.get(message.createBy as Ref<PersonAccount>)
     if (acc) {
-      return employees.get(acc.employee)
+      return employees.get(acc.person)
     }
   }
 </script>
 
 <div class="antiPopup vScroll popup">
   {#each pinnedMessages as message}
-    {@const employee = getEmployee(message, $employeeAccountByIdStore, $employeeByIdStore)}
+    {@const employee = getEmployee(message, $personAccountByIdStore, $collaboratorByIdStore)}
     <div class="message">
       <div class="header">
         <div class="avatar">

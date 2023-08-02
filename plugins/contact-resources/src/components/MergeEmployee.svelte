@@ -32,7 +32,7 @@
   const dispatch = createEventDispatcher()
   const client = getClient()
   const hierarchy = client.getHierarchy()
-  const parent = hierarchy.getParentClass(contact.class.Employee)
+  const parent = hierarchy.getParentClass(contact.mixin.Employee)
   const mixins = hierarchy.getDescendants(parent).filter((p) => hierarchy.isMixin(p))
 
   let sourceEmployee = value._id
@@ -44,7 +44,7 @@
   const targetQuery = createQuery()
   $: targetEmployee &&
     sourceEmployee &&
-    targetQuery.query(contact.class.Employee, { _id: { $in: [sourceEmployee, targetEmployee] } }, (res) => {
+    targetQuery.query(contact.mixin.Employee, { _id: { $in: [sourceEmployee, targetEmployee] } }, (res) => {
       // ;[targetEmp] = res
       sourceEmp = res.find((it) => it._id === sourceEmployee)
       targetEmp = res.find((it) => it._id === targetEmployee)
@@ -57,7 +57,7 @@
 
   function fillUpdate (source: Employee, target: Employee): DocumentUpdate<Employee> {
     const res: DocumentUpdate<Employee> = {}
-    const attributes = hierarchy.getOwnAttributes(contact.class.Employee)
+    const attributes = hierarchy.getOwnAttributes(contact.mixin.Employee)
     for (const attribute of attributes) {
       const key = attribute[0]
       if (attribute[1].hidden) continue
@@ -179,7 +179,7 @@
 
   $: resultChannels = mergeChannels(oldChannels, targetChannels, enabledChannels)
 
-  const attributes = hierarchy.getAllAttributes(contact.class.Employee, core.class.Doc)
+  const attributes = hierarchy.getAllAttributes(contact.mixin.Employee, core.class.Doc)
   const ignoreKeys = ['name', 'avatar', 'createdOn']
   const objectAttributes = Array.from(attributes.entries()).filter(
     (p) => !p[1].hidden && !ignoreKeys.includes(p[0]) && !isCollectionAttr(hierarchy, { key: p[0], attr: p[1] })
@@ -272,7 +272,7 @@
             value={sourceEmp}
             {targetEmp}
             onChange={select}
-            _class={contact.class.Employee}
+            _class={contact.mixin.Employee}
             selected={toAny(update)[attribute[0]] !== undefined}
           />
         {/each}

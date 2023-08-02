@@ -13,8 +13,8 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import contact, { EmployeeAccount, getFirstName, getLastName } from '@hcengineering/contact'
-  import { ChannelsEditor, EditableAvatar, employeeByIdStore } from '@hcengineering/contact-resources'
+  import contact, { PersonAccount, getFirstName, getLastName } from '@hcengineering/contact'
+  import { ChannelsEditor, EditableAvatar, collaboratorByIdStore } from '@hcengineering/contact-resources'
   import { getCurrentAccount } from '@hcengineering/core'
   import login from '@hcengineering/login'
   import { getResource } from '@hcengineering/platform'
@@ -26,16 +26,18 @@
 
   let avatarEditor: EditableAvatar
 
-  const account = getCurrentAccount() as EmployeeAccount
-  const employee = $employeeByIdStore.get(account.employee)
+  const account = getCurrentAccount() as PersonAccount
+  const employeeC = $collaboratorByIdStore.get(account.person)
+  const employee = employeeC !== undefined ? client.getHierarchy().as(employeeC, contact.mixin.Employee) : undefined
   let firstName = employee ? getFirstName(employee.name) : ''
   let lastName = employee ? getLastName(employee.name) : ''
   let displayName = employee?.displayName ?? ''
 
   onDestroy(
-    employeeByIdStore.subscribe((p) => {
-      const emp = p.get(account.employee)
-      if (emp) {
+    collaboratorByIdStore.subscribe((p) => {
+      const empt = p.get(account.person)
+      if (empt) {
+        const emp = client.getHierarchy().as(empt, contact.mixin.Employee)
         firstName = getFirstName(emp.name)
         lastName = getLastName(emp.name)
         displayName = emp?.displayName ?? ''
@@ -50,7 +52,7 @@
       await avatarEditor.removeAvatar(employee.avatar)
     }
     const avatar = await avatarEditor.createAvatar()
-    await client.updateDoc(employee._class, employee.space, employee._id, {
+    await client.update(employee, {
       avatar
     })
   }

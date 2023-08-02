@@ -1,5 +1,5 @@
 import { Card } from '@hcengineering/board'
-import { Employee, EmployeeAccount } from '@hcengineering/contact'
+import { Collaborator, PersonAccount } from '@hcengineering/contact'
 import {
   TxOperations as Client,
   TxResult,
@@ -86,9 +86,9 @@ export function canAddCurrentUser (card: Card): boolean {
   if (card.members == null) {
     return true
   }
-  const employee = (getCurrentAccount() as EmployeeAccount).employee
+  const employee = (getCurrentAccount() as PersonAccount).person
 
-  return !card.members.includes(employee)
+  return !card.members.includes(employee as Ref<Collaborator>)
 }
 
 export function hasCover (card: Card): boolean {
@@ -100,13 +100,13 @@ export function hasDate (card: Card): boolean {
 }
 
 export function addCurrentUser (card: Card, client: Client): Promise<TxResult> | undefined {
-  const employee = (getCurrentAccount() as EmployeeAccount).employee
+  const employee = (getCurrentAccount() as PersonAccount).person
 
-  if (card.members?.includes(employee) === true) {
+  if (card.members?.includes(employee as Ref<Collaborator>) === true) {
     return
   }
 
-  return client.update(card, { $push: { members: employee } })
+  return client.update(card, { $push: { members: employee as Ref<Collaborator> } })
 }
 
 export function archiveCard (card: Card, client: Client): Promise<TxResult> | undefined {
@@ -117,7 +117,7 @@ export function unarchiveCard (card: Card, client: Client): Promise<TxResult> | 
   return updateCard(client, card, 'isArchived', false)
 }
 
-export function updateCardMembers (card: Card, client: Client, users: Array<Ref<Employee>>): void {
+export function updateCardMembers (card: Card, client: Client, users: Array<Ref<Collaborator>>): void {
   if (card?.members == null) return
   const { members } = card
   const membersToPull = members.filter((member) => !users.includes(member))

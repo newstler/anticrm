@@ -19,7 +19,7 @@ import contact, {
   Contact,
   contactId,
   Employee,
-  EmployeeAccount,
+  PersonAccount,
   getName,
   Organization,
   Person
@@ -105,8 +105,8 @@ export async function OnContactDelete (
 
 async function updateAllRefs (
   control: TriggerControl,
-  sourceAccount: EmployeeAccount,
-  targetAccount: EmployeeAccount,
+  sourceAccount: PersonAccount,
+  targetAccount: PersonAccount,
   modifiedOn: Timestamp,
   modifiedBy: Ref<Account>
 ): Promise<Tx[]> {
@@ -115,7 +115,7 @@ async function updateAllRefs (
   const reftos = (await control.modelDb.findAll(core.class.Attribute, { 'type._class': core.class.RefTo })).filter(
     (it) => {
       const to = it.type as RefTo<Doc>
-      return to.to === contact.class.Employee || to.to === core.class.Account || to.to === contact.class.EmployeeAccount
+      return to.to === contact.mixin.Employee || to.to === core.class.Account || to.to === contact.class.PersonAccount
     }
   )
 
@@ -124,7 +124,7 @@ async function updateAllRefs (
       continue
     }
     const to = attr.type as RefTo<Doc>
-    if (to.to === contact.class.Employee) {
+    if (to.to === contact.mixin.Employee) {
       const descendants = control.hierarchy.getDescendants(attr.attributeOf)
       for (const d of descendants) {
         if (control.hierarchy.isDerived(d, core.class.Tx)) {
@@ -132,14 +132,14 @@ async function updateAllRefs (
         }
         if (control.hierarchy.findDomain(d) !== undefined) {
           while (true) {
-            const values = await control.findAll(d, { [attr.name]: sourceAccount.employee }, { limit: 100 })
+            const values = await control.findAll(d, { [attr.name]: sourceAccount.person }, { limit: 100 })
             if (values.length === 0) {
               break
             }
 
             const builder = new TxBuilder(control.hierarchy, control.modelDb, modifiedBy)
             for (const v of values) {
-              await updateAttribute(builder, v, d, { key: attr.name, attr }, targetAccount.employee, targetAccount._id)
+              await updateAttribute(builder, v, d, { key: attr.name, attr }, targetAccount.person, targetAccount._id)
             }
             if (builder.txes.length > 0) {
               console.log('merge employee:', sourceAccount.name, 'to', targetAccount.name, d, builder.txes.length)
@@ -150,7 +150,7 @@ async function updateAllRefs (
       }
     }
     if (
-      (to.to === contact.class.EmployeeAccount || to.to === core.class.Account) &&
+      (to.to === contact.class.PersonAccount || to.to === core.class.Account) &&
       sourceAccount !== undefined &&
       targetAccount !== undefined
     ) {
@@ -184,7 +184,7 @@ async function updateAllRefs (
       continue
     }
     const to = attr.type as RefTo<Doc>
-    if (to.to === contact.class.Employee) {
+    if (to.to === contact.mixin.Employee) {
       const descendants = control.hierarchy.getDescendants(attr.attributeOf)
       for (const d of descendants) {
         if (control.hierarchy.isDerived(d, core.class.Tx)) {
@@ -194,7 +194,7 @@ async function updateAllRefs (
           while (true) {
             const values = await control.findAll(
               attr.attributeOf,
-              { [attr.name]: sourceAccount.employee },
+              { [attr.name]: sourceAccount.person },
               { limit: 100 }
             )
             if (values.length === 0) {
@@ -202,7 +202,7 @@ async function updateAllRefs (
             }
             const builder = new TxBuilder(control.hierarchy, control.modelDb, modifiedBy)
             for (const v of values) {
-              await updateAttribute(builder, v, d, { key: attr.name, attr }, targetAccount.employee, targetAccount._id)
+              await updateAttribute(builder, v, d, { key: attr.name, attr }, targetAccount.person, targetAccount._id)
             }
             if (builder.txes.length > 0) {
               console.log('merge employee:', sourceAccount.name, 'to', targetAccount.name, d, builder.txes.length)
@@ -213,7 +213,7 @@ async function updateAllRefs (
       }
     }
     if (
-      (to.to === contact.class.EmployeeAccount || to.to === core.class.Account) &&
+      (to.to === contact.class.PersonAccount || to.to === core.class.Account) &&
       sourceAccount !== undefined &&
       targetAccount !== undefined
     ) {
@@ -241,7 +241,9 @@ async function updateAllRefs (
       }
     }
   }
-  const employee = (await control.findAll(contact.class.Employee, { _id: sourceAccount.employee })).shift()
+  const employee = (
+    await control.findAll(contact.mixin.Employee, { _id: sourceAccount.person as Ref<Employee> })
+  ).shift()
 
   const builder = new TxBuilder(control.hierarchy, control.modelDb, modifiedBy)
   if (employee !== undefined) {
@@ -257,7 +259,7 @@ async function mergeEmployee (control: TriggerControl, uTx: TxUpdateDoc<Employee
   if (uTx.operations.mergedTo === undefined) return []
   const target = uTx.operations.mergedTo
 
-  const attributes = control.hierarchy.getAllAttributes(contact.class.Employee)
+  const attributes = control.hierarchy.getAllAttributes(contact.mixin.Employee)
 
   for (const attribute of attributes) {
     if (control.hierarchy.isDerived(attribute[1].type._class, core.class.Collection)) {
@@ -287,15 +289,13 @@ async function mergeEmployee (control: TriggerControl, uTx: TxUpdateDoc<Employee
     }
   }
 
-  const oldEmployeeAccount = (
-    await control.modelDb.findAll(contact.class.EmployeeAccount, { employee: uTx.objectId })
-  )[0]
-  const newEmployeeAccount = (await control.modelDb.findAll(contact.class.EmployeeAccount, { employee: target }))[0]
+  const oldPersonAccount = (await control.modelDb.findAll(contact.class.PersonAccount, { employee: uTx.objectId }))[0]
+  const newPersonAccount = (await control.modelDb.findAll(contact.class.PersonAccount, { employee: target }))[0]
 
-  if (oldEmployeeAccount === undefined || newEmployeeAccount === undefined) {
+  if (oldPersonAccount === undefined || newPersonAccount === undefined) {
     return []
   }
-  return await updateAllRefs(control, oldEmployeeAccount, newEmployeeAccount, uTx.modifiedOn, uTx.modifiedBy)
+  return await updateAllRefs(control, oldPersonAccount, newPersonAccount, uTx.modifiedOn, uTx.modifiedBy)
 }
 
 /**

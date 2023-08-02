@@ -25,6 +25,9 @@
   export let options: FindOptions<Contact> | undefined = undefined
   export let selected: Ref<Person> | undefined
   export let docQuery: DocumentQuery<Contact> | undefined = undefined
+  export let filter: (it: Doc) => boolean = () => {
+    return true
+  }
 
   export let multiSelect: boolean = false
   export let allowDeselect: boolean = false
@@ -61,6 +64,7 @@
   {titleDeselect}
   {placeholder}
   {docQuery}
+  {filter}
   groupBy={'_class'}
   bind:selectedObjects={selectedUsers}
   bind:ignoreObjects={ignoreUsers}

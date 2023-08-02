@@ -14,8 +14,8 @@
 -->
 <script lang="ts">
   import { Message } from '@hcengineering/chunter'
-  import { Employee } from '@hcengineering/contact'
-  import { employeeByIdStore } from '@hcengineering/contact-resources'
+  import { Collaborator } from '@hcengineering/contact'
+  import { collaboratorByIdStore } from '@hcengineering/contact-resources'
   import { IdMap, Ref } from '@hcengineering/core'
   import { Avatar } from '@hcengineering/contact-resources'
   import { Label, TimeSince } from '@hcengineering/ui'
@@ -26,11 +26,11 @@
   $: employees = new Set(message.replies)
 
   const shown: number = 4
-  let showReplies: Employee[] = []
+  let showReplies: Collaborator[] = []
 
-  $: updateQuery(employees, $employeeByIdStore)
+  $: updateQuery(employees, $collaboratorByIdStore)
 
-  function updateQuery (employees: Set<Ref<Employee>>, map: IdMap<Employee>) {
+  function updateQuery (employees: Set<Ref<Collaborator>>, map: IdMap<Collaborator>) {
     showReplies = []
     for (const employee of employees) {
       const emp = map.get(employee)

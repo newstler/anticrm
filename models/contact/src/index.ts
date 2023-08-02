@@ -23,7 +23,7 @@ import {
   Contact,
   ContactsTab,
   Employee,
-  EmployeeAccount,
+  PersonAccount,
   GetAvatarUrl,
   Member,
   Organization,
@@ -31,7 +31,8 @@ import {
   Person,
   Persons,
   Status,
-  contactId
+  contactId,
+  Collaborator
 } from '@hcengineering/contact'
 import { Class, DOMAIN_MODEL, DateRangeMode, Domain, IndexKind, Ref, Timestamp } from '@hcengineering/core'
 import {
@@ -39,6 +40,7 @@ import {
   Collection,
   Hidden,
   Index,
+  Mixin,
   Model,
   Prop,
   TypeDate,
@@ -153,7 +155,7 @@ export class TStatus extends TAttachedDoc implements Status {
   dueDate!: Timestamp
 }
 
-@Model(contact.class.Employee, contact.class.Person)
+@Mixin(contact.mixin.Employee, contact.class.Person)
 @UX(contact.string.Employee, contact.icon.Person, 'EMP', 'name')
 export class TEmployee extends TPerson implements Employee {
   active!: boolean
@@ -170,10 +172,14 @@ export class TEmployee extends TPerson implements Employee {
     position?: string | null
 }
 
-@Model(contact.class.EmployeeAccount, core.class.Account)
-export class TEmployeeAccount extends TAccount implements EmployeeAccount {
-  employee!: Ref<Employee>
-  mergedTo!: Ref<EmployeeAccount>
+@Mixin(contact.mixin.Collaborator, contact.class.Person)
+@UX(contact.string.Collaborator, contact.icon.Person, 'COL', 'name')
+export class TCollaborator extends TPerson implements Collaborator {}
+
+@Model(contact.class.PersonAccount, core.class.Account)
+export class TPersonAccount extends TAccount implements PersonAccount {
+  person!: Ref<Person>
+  mergedTo!: Ref<PersonAccount>
 }
 
 @Model(contact.class.Organizations, core.class.Space)
@@ -201,14 +207,15 @@ export function createModel (builder: Builder): void {
     TOrganization,
     TOrganizations,
     TEmployee,
-    TEmployeeAccount,
+    TPersonAccount,
     TChannel,
     TStatus,
     TMember,
-    TContactsTab
+    TContactsTab,
+    TCollaborator
   )
 
-  builder.mixin(contact.class.Employee, core.class.Class, view.mixin.ObjectFactory, {
+  builder.mixin(contact.mixin.Employee, core.class.Class, view.mixin.ObjectFactory, {
     component: contact.component.CreateEmployee
   })
 
@@ -239,7 +246,7 @@ export function createModel (builder: Builder): void {
             icon: contact.icon.Person,
             label: contact.string.Employee,
             componentProps: {
-              _class: contact.class.Employee,
+              _class: contact.mixin.Employee,
               icon: contact.icon.Person,
               label: contact.string.Employee,
               createLabel: contact.string.CreateEmployee,
@@ -337,7 +344,7 @@ export function createModel (builder: Builder): void {
       baseQuery: {
         _class: {
           $in: [contact.class.Person],
-          $nin: [contact.class.Employee]
+          $nin: [contact.mixin.Employee]
         }
       }
     },
@@ -347,7 +354,7 @@ export function createModel (builder: Builder): void {
     view.class.Viewlet,
     core.space.Model,
     {
-      attachTo: contact.class.Employee,
+      attachTo: contact.mixin.Employee,
       descriptor: view.viewlet.Table,
       config: [
         '',
@@ -400,7 +407,7 @@ export function createModel (builder: Builder): void {
     pinned: true
   })
 
-  builder.mixin(contact.class.Employee, core.class.Class, view.mixin.ObjectEditor, {
+  builder.mixin(contact.mixin.Employee, core.class.Class, view.mixin.ObjectEditor, {
     editor: contact.component.EditEmployee,
     pinned: true
   })
@@ -418,7 +425,7 @@ export function createModel (builder: Builder): void {
     editor: contact.component.Members
   })
 
-  builder.mixin(contact.class.Employee, core.class.Class, view.mixin.ArrayEditor, {
+  builder.mixin(contact.mixin.Employee, core.class.Class, view.mixin.ArrayEditor, {
     inlineEditor: contact.component.EmployeeArrayEditor
   })
 
@@ -450,7 +457,7 @@ export function createModel (builder: Builder): void {
     inlineEditor: contact.component.PersonEditor
   })
 
-  builder.mixin(contact.class.Employee, core.class.Class, view.mixin.AttributeEditor, {
+  builder.mixin(contact.mixin.Employee, core.class.Class, view.mixin.AttributeEditor, {
     inlineEditor: contact.component.EmployeeEditor
   })
 
@@ -466,15 +473,15 @@ export function createModel (builder: Builder): void {
     encode: contact.function.GetContactLink
   })
 
-  builder.mixin(contact.class.Employee, core.class.Class, view.mixin.AttributeFilterPresenter, {
+  builder.mixin(contact.mixin.Employee, core.class.Class, view.mixin.AttributeFilterPresenter, {
     presenter: contact.component.EmployeeFilterValuePresenter
   })
 
   builder.mixin(core.class.Account, core.class.Class, view.mixin.AttributeFilterPresenter, {
-    presenter: contact.component.EmployeeAccountFilterValuePresenter
+    presenter: contact.component.PersonAccountFilterValuePresenter
   })
 
-  builder.mixin(contact.class.Employee, core.class.Class, view.mixin.AttributeFilter, {
+  builder.mixin(contact.mixin.Employee, core.class.Class, view.mixin.AttributeFilter, {
     component: contact.component.EmployeeFilter
   })
 
@@ -621,15 +628,15 @@ export function createModel (builder: Builder): void {
     inlineEditor: contact.component.AccountArrayEditor
   })
 
-  builder.mixin(contact.class.EmployeeAccount, core.class.Class, view.mixin.ArrayEditor, {
+  builder.mixin(contact.class.PersonAccount, core.class.Class, view.mixin.ArrayEditor, {
     inlineEditor: contact.component.AccountArrayEditor
   })
 
   builder.mixin(core.class.Account, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: contact.component.EmployeeAccountPresenter
+    presenter: contact.component.PersonAccountPresenter
   })
   builder.mixin(core.class.Account, core.class.Class, view.mixin.AttributePresenter, {
-    presenter: contact.component.EmployeeAccountRefPresenter
+    presenter: contact.component.PersonAccountRefPresenter
   })
 
   builder.mixin(contact.class.Organization, core.class.Class, view.mixin.ObjectPresenter, {
@@ -640,11 +647,11 @@ export function createModel (builder: Builder): void {
     presenter: contact.component.ContactPresenter
   })
 
-  builder.mixin(contact.class.Employee, core.class.Class, view.mixin.ObjectPresenter, {
+  builder.mixin(contact.mixin.Employee, core.class.Class, view.mixin.ObjectPresenter, {
     presenter: contact.component.EmployeePresenter
   })
 
-  builder.mixin(contact.class.Employee, core.class.Class, view.mixin.SortFuncs, {
+  builder.mixin(contact.mixin.Employee, core.class.Class, view.mixin.SortFuncs, {
     func: contact.function.EmployeeSort
   })
 
@@ -656,11 +663,11 @@ export function createModel (builder: Builder): void {
     presenter: contact.component.ContactRefPresenter
   })
 
-  builder.mixin(contact.class.Employee, core.class.Class, view.mixin.AttributePresenter, {
+  builder.mixin(contact.mixin.Employee, core.class.Class, view.mixin.AttributePresenter, {
     presenter: contact.component.EmployeeRefPresenter
   })
 
-  builder.mixin(contact.class.Employee, core.class.Class, view.mixin.IgnoreActions, {
+  builder.mixin(contact.mixin.Employee, core.class.Class, view.mixin.IgnoreActions, {
     actions: [view.action.Delete]
   })
 
@@ -671,7 +678,7 @@ export function createModel (builder: Builder): void {
   builder.mixin(contact.class.Person, core.class.Class, view.mixin.ClassFilters, {
     filters: []
   })
-  builder.mixin(contact.class.Employee, core.class.Class, view.mixin.ClassFilters, {
+  builder.mixin(contact.mixin.Employee, core.class.Class, view.mixin.ClassFilters, {
     filters: []
   })
   builder.mixin(contact.class.Organization, core.class.Class, view.mixin.ClassFilters, {
@@ -737,7 +744,7 @@ export function createModel (builder: Builder): void {
         active: true
       },
       category: contact.category.Contact,
-      target: contact.class.Employee,
+      target: contact.mixin.Employee,
       input: 'focus',
       context: {
         mode: ['context'],
@@ -757,7 +764,7 @@ export function createModel (builder: Builder): void {
         active: false
       },
       category: contact.category.Contact,
-      target: contact.class.Employee,
+      target: contact.mixin.Employee,
       input: 'focus',
       context: {
         mode: ['context'],
@@ -784,7 +791,7 @@ export function createModel (builder: Builder): void {
       },
       label: contact.string.MergeEmployee,
       category: contact.category.Contact,
-      target: contact.class.Employee,
+      target: contact.mixin.Employee,
       input: 'focus',
       context: {
         mode: ['context'],

@@ -174,7 +174,7 @@ addStringsLoader(requestId, async (lang: string) => requestEn)
 /**
  * @public
  */
-export function start (
+export function start(
   dbUrl: string,
   opt: {
     fullTextUrl: string
@@ -218,7 +218,7 @@ export function start (
   ]
 
   const metrics = getMetricsContext().newChild('indexing', {})
-  function createIndexStages (
+  function createIndexStages(
     fullText: MeasureContext,
     workspace: WorkspaceId,
     adapter: FullTextAdapter,

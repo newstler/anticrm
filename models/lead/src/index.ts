@@ -77,7 +77,7 @@ export class TLead extends TTask implements Lead {
   @Index(IndexKind.FullText)
     title!: string
 
-  @Prop(TypeRef(contact.class.Employee), lead.string.Assignee)
+  @Prop(TypeRef(contact.mixin.Employee), lead.string.Assignee)
   declare assignee: Ref<Employee> | null
 }
 

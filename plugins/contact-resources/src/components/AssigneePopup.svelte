@@ -13,7 +13,7 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import contact, { Contact, Employee, EmployeeAccount, Person } from '@hcengineering/contact'
+  import contact, { Contact, PersonAccount, Person, Collaborator } from '@hcengineering/contact'
   import { DocumentQuery, FindOptions, getCurrentAccount, Ref } from '@hcengineering/core'
   import type { Asset, IntlString } from '@hcengineering/platform'
   import {
@@ -30,7 +30,7 @@
     Label,
     tooltip
   } from '@hcengineering/ui'
-  import presentation, { createQuery } from '@hcengineering/presentation'
+  import presentation, { createQuery, getClient } from '@hcengineering/presentation'
   import { createEventDispatcher } from 'svelte'
   import { AssigneeCategory, assigneeCategoryOrder, getCategoryTitle } from '../assignee'
   import UserInfo from './UserInfo.svelte'
@@ -38,9 +38,9 @@
   export let options: FindOptions<Contact> | undefined = undefined
   export let selected: Ref<Person> | undefined
   export let docQuery: DocumentQuery<Contact> | undefined = undefined
-  export let prevAssigned: Ref<Employee>[] | undefined = []
-  export let componentLead: Ref<Employee> | undefined = undefined
-  export let members: Ref<Employee>[] | undefined = []
+  export let prevAssigned: Ref<Collaborator>[] | undefined = []
+  export let componentLead: Ref<Collaborator> | undefined = undefined
+  export let members: Ref<Collaborator>[] | undefined = []
   export let allowDeselect = true
   export let titleDeselect: IntlString | undefined
   export let placeholder: IntlString = presentation.string.Search
@@ -52,9 +52,8 @@
   export let showCategories: boolean = true
   export let icon: Asset | AnySvelteComponent | undefined = undefined
 
-  // const client = getClient()
-  // const hierarchy = client.getHierarchy()
-  const currentEmployee = (getCurrentAccount() as EmployeeAccount).employee
+  const client = getClient()
+  const currentEmployee = (getCurrentAccount() as PersonAccount).person
 
   let search: string = ''
   let objects: Contact[] = []
@@ -66,7 +65,7 @@
   const query = createQuery()
 
   $: query.query<Contact>(
-    contact.class.Employee,
+    contact.mixin.Collaborator,
     {
       ...(docQuery ?? {}),
       [searchField]: { $like: '%' + search + '%' },
@@ -76,7 +75,13 @@
       }
     },
     (result) => {
-      objects = result
+      const h = client.getHierarchy()
+      objects = result.filter((it) => {
+        if (h.hasMixin(it, contact.mixin.Employee)) {
+          return h.as(it, contact.mixin.Employee).active
+        }
+        return true
+      })
     },
     { ...(options ?? {}), limit: 200, sort: { name: 1 } }
   )

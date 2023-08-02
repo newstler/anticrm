@@ -1,4 +1,10 @@
-import contact, { Channel, Contact, Employee, EmployeeAccount, getName as getContactName } from '@hcengineering/contact'
+import contact, {
+  Channel,
+  Collaborator,
+  Contact,
+  PersonAccount,
+  getName as getContactName
+} from '@hcengineering/contact'
 import { Doc, IdMap, Ref, toIdMap } from '@hcengineering/core'
 import { Message, SharedMessage } from '@hcengineering/gmail'
 import { getClient } from '@hcengineering/presentation'
@@ -65,8 +71,8 @@ export function convertMessages (
   object: Contact,
   channel: Channel,
   messages: Message[],
-  accounts: IdMap<EmployeeAccount>,
-  employees: IdMap<Employee>
+  accounts: IdMap<PersonAccount>,
+  employees: IdMap<Collaborator>
 ): SharedMessage[] {
   return messages.map((m) => {
     return {
@@ -82,10 +88,10 @@ export async function convertMessage (
   object: Contact,
   channel: Channel,
   message: Message,
-  employees: IdMap<Employee>
+  employees: IdMap<Collaborator>
 ): Promise<SharedMessage> {
   const client = getClient()
-  const accounts = toIdMap(await client.findAll(contact.class.EmployeeAccount, {}))
+  const accounts = toIdMap(await client.findAll(contact.class.PersonAccount, {}))
   return {
     ...message,
     _id: message._id as string as Ref<SharedMessage>,
@@ -98,15 +104,15 @@ export function getName (
   object: Contact,
   channel: Channel,
   message: Message,
-  accounts: IdMap<EmployeeAccount>,
-  employees: IdMap<Employee>,
+  accounts: IdMap<PersonAccount>,
+  employees: IdMap<Collaborator>,
   sender: boolean
 ): string {
   if (message.incoming === sender) {
     return `${getContactName(object)} (${channel.value})`
   } else {
-    const account = accounts.get(message.modifiedBy as Ref<EmployeeAccount>)
-    const emp = account != null ? employees.get(account?.employee) : undefined
+    const account = accounts.get(message.modifiedBy as Ref<PersonAccount>)
+    const emp = account != null ? employees.get(account?.person) : undefined
     const value = message.incoming ? message.to : message.from
     const email = value.match(EMAIL_REGEX)
     const emailVal = email?.[0] ?? value

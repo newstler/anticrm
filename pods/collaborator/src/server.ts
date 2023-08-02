@@ -12,7 +12,7 @@ import { MinioService } from '@hcengineering/minio'
  * @param port -
  * @param host -
  */
-export function start (ctx: MeasureContext, port: number, minio: MinioService, host?: string): () => void {
+export function start(ctx: MeasureContext, port: number, minio: MinioService, host?: string): () => void {
   console.log(`starting server on port ${port} ...`)
 
   const wss = new WebSocketServer({

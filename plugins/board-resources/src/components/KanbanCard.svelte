@@ -17,7 +17,7 @@
   import { AttachmentDroppable, AttachmentsPresenter } from '@hcengineering/attachment-resources'
   import type { Card } from '@hcengineering/board'
   import { CommentsPresenter } from '@hcengineering/chunter-resources'
-  import { Employee } from '@hcengineering/contact'
+  import { Collaborator } from '@hcengineering/contact'
   import type { Ref, WithLookup } from '@hcengineering/core'
   import notification from '@hcengineering/notification'
   import view from '@hcengineering/view'
@@ -68,7 +68,7 @@
     return !!e.dataTransfer?.items && e.dataTransfer?.items.length > 0
   }
 
-  function updateMembers (e: CustomEvent<Ref<Employee>[]>) {
+  function updateMembers (e: CustomEvent<Ref<Collaborator>[]>) {
     updateCardMembers(object, client, e.detail)
   }
 

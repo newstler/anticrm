@@ -17,8 +17,8 @@
   import { AttachmentDocList } from '@hcengineering/attachment-resources'
   import type { Comment } from '@hcengineering/chunter'
   import chunter from '@hcengineering/chunter'
-  import { Employee, EmployeeAccount, getName } from '@hcengineering/contact'
-  import { Avatar, employeeAccountByIdStore, employeeByIdStore } from '@hcengineering/contact-resources'
+  import { Collaborator, Person, PersonAccount, getName } from '@hcengineering/contact'
+  import { Avatar, collaboratorByIdStore, personAccountByIdStore } from '@hcengineering/contact-resources'
   import { IdMap, Ref } from '@hcengineering/core'
   import { MessageViewer } from '@hcengineering/presentation'
   import { Icon, ShowMore, TimeSince } from '@hcengineering/ui'
@@ -34,12 +34,12 @@
 
   async function getEmployee (
     value: Comment,
-    employees: IdMap<Employee>,
-    accounts: IdMap<EmployeeAccount>
-  ): Promise<Employee | undefined> {
-    const acc = accounts.get(value.modifiedBy as Ref<EmployeeAccount>)
+    employees: IdMap<Collaborator>,
+    accounts: IdMap<PersonAccount>
+  ): Promise<Person | undefined> {
+    const acc = accounts.get(value.modifiedBy as Ref<PersonAccount>)
     if (acc !== undefined) {
-      const emp = employees.get(acc.employee)
+      const emp = employees.get(acc.person)
       return emp
     }
   }
@@ -76,7 +76,7 @@
   &nbsp;<span class="content-dark-color">#{cutId(value._id.toString())}</span>
 {:else}
   <div class="flex-row-top">
-    {#await getEmployee(value, $employeeByIdStore, $employeeAccountByIdStore) then employee}
+    {#await getEmployee(value, $collaboratorByIdStore, $personAccountByIdStore) then employee}
       <div class="avatar">
         <Avatar size={'medium'} avatar={employee?.avatar} />
       </div>

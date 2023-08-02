@@ -14,11 +14,11 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { EmployeeAccount } from '@hcengineering/contact'
+  import { PersonAccount } from '@hcengineering/contact'
   import core, { Account, systemAccountEmail } from '@hcengineering/core'
   import { getEmbeddedLabel } from '@hcengineering/platform'
   import { Label, tooltip, IconSize } from '@hcengineering/ui'
-  import { employeeByIdStore } from '../utils'
+  import { collaboratorByIdStore } from '../utils'
   import Avatar from './Avatar.svelte'
   import EmployeePresenter from './EmployeePresenter.svelte'
 
@@ -28,7 +28,7 @@
   export let inline: boolean = false
   export let accent: boolean = false
 
-  $: employee = $employeeByIdStore.get((value as EmployeeAccount)?.employee)
+  $: employee = $collaboratorByIdStore.get((value as PersonAccount)?.person)
 
   const valueLabel = value?.email === systemAccountEmail ? core.string.System : getEmbeddedLabel(value?.email)
 </script>

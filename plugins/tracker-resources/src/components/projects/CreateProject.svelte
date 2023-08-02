@@ -13,7 +13,7 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { Employee } from '@hcengineering/contact'
+  import { Collaborator } from '@hcengineering/contact'
   import { AccountArrayEditor, AssigneeBox } from '@hcengineering/contact-resources'
   import core, { Account, DocumentUpdate, Ref, generateId, getCurrentAccount } from '@hcengineering/core'
   import { Asset } from '@hcengineering/platform'
@@ -51,7 +51,7 @@
   let icon: Asset | undefined = project?.icon ?? undefined
   let color = project?.color ?? getColorNumberByText(name)
   let isColorSelected = false
-  let defaultAssignee: Ref<Employee> | null | undefined = project?.defaultAssignee ?? null
+  let defaultAssignee: Ref<Collaborator> | null | undefined = project?.defaultAssignee ?? null
   let members: Ref<Account>[] =
     project?.members !== undefined ? hierarchy.clone(project.members) : [getCurrentAccount()._id]
   let projectsIdentifiers: Set<string> = new Set()

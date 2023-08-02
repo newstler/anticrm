@@ -13,7 +13,7 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import contact, { Contact, Employee, getName } from '@hcengineering/contact'
+  import contact, { Contact, Collaborator, getName } from '@hcengineering/contact'
   import { Class, DocumentQuery, FindOptions, Hierarchy, Ref } from '@hcengineering/core'
   import { getEmbeddedLabel, IntlString } from '@hcengineering/platform'
   import {
@@ -34,24 +34,22 @@
   import view from '@hcengineering/view'
   import { createEventDispatcher } from 'svelte'
   import presentation, { getClient } from '@hcengineering/presentation'
-  import { PersonLabelTooltip, employeeByIdStore } from '..'
+  import { PersonLabelTooltip, collaboratorByIdStore } from '..'
   import AssigneePopup from './AssigneePopup.svelte'
   import IconPerson from './icons/Person.svelte'
   import UserInfo from './UserInfo.svelte'
   import EmployeePresenter from './EmployeePresenter.svelte'
 
-  export let _class: Ref<Class<Employee>> = contact.class.Employee
+  export let _class: Ref<Class<Collaborator>> = contact.mixin.Employee
   export let excluded: Ref<Contact>[] | undefined = undefined
-  export let options: FindOptions<Employee> | undefined = undefined
-  export let docQuery: DocumentQuery<Employee> | undefined = {
-    active: true
-  }
+  export let options: FindOptions<Collaborator> | undefined = undefined
+  export let docQuery: DocumentQuery<Collaborator> | undefined = {}
   export let label: IntlString
   export let placeholder: IntlString = presentation.string.Search
-  export let value: Ref<Employee> | null | undefined
-  export let prevAssigned: Ref<Employee>[] | undefined = []
-  export let componentLead: Ref<Employee> | undefined = undefined
-  export let members: Ref<Employee>[] | undefined = []
+  export let value: Ref<Collaborator> | null | undefined
+  export let prevAssigned: Ref<Collaborator>[] | undefined = []
+  export let componentLead: Ref<Collaborator> | undefined = undefined
+  export let members: Ref<Collaborator>[] | undefined = []
   export let allowDeselect = true
   export let titleDeselect: IntlString | undefined = undefined
   export let readonly = false
@@ -71,13 +69,13 @@
 
   const dispatch = createEventDispatcher()
 
-  let selected: Employee | undefined
+  let selected: Collaborator | undefined
   let container: HTMLElement
 
   const client = getClient()
 
-  async function updateSelected (value: Ref<Employee> | null | undefined) {
-    selected = value ? $employeeByIdStore.get(value) ?? (await client.findOne(_class, { _id: value })) : undefined
+  async function updateSelected (value: Ref<Collaborator> | null | undefined) {
+    selected = value ? $collaboratorByIdStore.get(value) ?? (await client.findOne(_class, { _id: value })) : undefined
   }
 
   $: updateSelected(value)

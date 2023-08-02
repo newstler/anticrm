@@ -136,6 +136,11 @@ export interface Status extends AttachedDoc {
 /**
  * @public
  */
+export interface Collaborator extends Person {}
+
+/**
+ * @public
+ */
 export interface Employee extends Person {
   active: boolean
   mergedTo?: Ref<Employee>
@@ -147,9 +152,9 @@ export interface Employee extends Person {
 /**
  * @public
  */
-export interface EmployeeAccount extends Account {
-  employee: Ref<Employee>
-  mergedTo?: Ref<EmployeeAccount>
+export interface PersonAccount extends Account {
+  person: Ref<Person>
+  mergedTo?: Ref<PersonAccount>
 }
 
 /**
@@ -180,10 +185,13 @@ export const contactPlugin = plugin(contactId, {
     Member: '' as Ref<Class<Member>>,
     Organization: '' as Ref<Class<Organization>>,
     Organizations: '' as Ref<Class<Organizations>>,
-    Employee: '' as Ref<Class<Employee>>,
-    EmployeeAccount: '' as Ref<Class<EmployeeAccount>>,
+    PersonAccount: '' as Ref<Class<PersonAccount>>,
     Status: '' as Ref<Class<Status>>,
     ContactsTab: '' as Ref<Class<ContactsTab>>
+  },
+  mixin: {
+    Employee: '' as Ref<Class<Employee>>,
+    Collaborator: '' as Ref<Class<Collaborator>>
   },
   component: {
     SocialEditor: '' as AnyComponent,

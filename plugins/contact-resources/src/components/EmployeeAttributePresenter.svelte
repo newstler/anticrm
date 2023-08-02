@@ -1,29 +1,29 @@
 <script lang="ts">
-  import { Employee } from '@hcengineering/contact'
+  import { Collaborator } from '@hcengineering/contact'
   import { Ref } from '@hcengineering/core'
   import { ButtonKind, IconSize } from '@hcengineering/ui'
   import { PersonLabelTooltip } from '..'
   import contact from '../plugin'
-  import { employeeByIdStore } from '../utils'
+  import { collaboratorByIdStore } from '../utils'
   import AssigneeBox from './AssigneeBox.svelte'
   import EmployeePresenter from './EmployeePresenter.svelte'
 
-  export let value: Ref<Employee> | null | undefined
+  export let value: Ref<Collaborator> | null | undefined
   export let kind: ButtonKind = 'link'
   export let tooltipLabels: PersonLabelTooltip | undefined = undefined
-  export let onChange: ((value: Ref<Employee>) => void) | undefined = undefined
+  export let onChange: ((value: Ref<Collaborator>) => void) | undefined = undefined
   export let colorInherit: boolean = false
   export let accent: boolean = false
   export let inline: boolean = false
   export let shouldShowName: boolean = true
   export let avatarSize: IconSize = kind === 'list-header' ? 'smaller' : 'x-small'
 
-  $: employee = value ? $employeeByIdStore.get(value) : undefined
+  $: employee = value ? $collaboratorByIdStore.get(value) : undefined
 
   function getValue (
-    employee: Employee | undefined,
-    value: Ref<Employee> | null | undefined
-  ): Employee | null | undefined {
+    employee: Collaborator | undefined,
+    value: Ref<Collaborator> | null | undefined
+  ): Collaborator | null | undefined {
     if (value === undefined || value === null) {
       return value
     }

@@ -16,8 +16,8 @@
   import activity, { TxViewlet } from '@hcengineering/activity'
   import { activityKey, ActivityKey } from '@hcengineering/activity-resources'
   import chunter from '@hcengineering/chunter'
-  import { Employee, EmployeeAccount, getName } from '@hcengineering/contact'
-  import { Avatar, employeeAccountByIdStore, employeeByIdStore } from '@hcengineering/contact-resources'
+  import { Collaborator, getName, PersonAccount } from '@hcengineering/contact'
+  import { Avatar, collaboratorByIdStore, personAccountByIdStore } from '@hcengineering/contact-resources'
   import core, { Account, Doc, getCurrentAccount, Ref } from '@hcengineering/core'
   import notification, { DocUpdates } from '@hcengineering/notification'
   import { ActionContext, createQuery, getClient } from '@hcengineering/presentation'
@@ -123,10 +123,10 @@
 
   let selected = 0
 
-  let employee: Employee | undefined = undefined
+  let employee: Collaborator | undefined = undefined
   $: newTxes = docs.reduce((acc, cur) => acc + cur.txes.filter((p) => p.isNew).length, 0) // items.length
-  $: account = $employeeAccountByIdStore.get(accountId as Ref<EmployeeAccount>)
-  $: employee = account ? $employeeByIdStore.get(account.employee) : undefined
+  $: account = $personAccountByIdStore.get(accountId as Ref<PersonAccount>)
+  $: employee = account ? $collaboratorByIdStore.get(account.person) : undefined
 
   const client = getClient()
 

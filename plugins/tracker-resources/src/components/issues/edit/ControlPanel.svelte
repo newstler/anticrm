@@ -13,8 +13,8 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { EmployeeAccount } from '@hcengineering/contact'
-  import { EmployeeBox, employeeAccountByIdStore, employeeByIdStore } from '@hcengineering/contact-resources'
+  import { PersonAccount } from '@hcengineering/contact'
+  import { EmployeeBox, personAccountByIdStore, collaboratorByIdStore } from '@hcengineering/contact-resources'
   import core, { ClassifierKind, Doc, Mixin, Ref } from '@hcengineering/core'
   import { AttributeBarEditor, KeyedAttribute, createQuery, getClient } from '@hcengineering/presentation'
 
@@ -87,10 +87,10 @@
     'blockedBy'
   ])
 
-  let account: EmployeeAccount | undefined
-  $: employee = account && $employeeByIdStore.get(account.employee)
+  let account: PersonAccount | undefined
+  $: employee = account && $collaboratorByIdStore.get(account.person)
 
-  $: account = $employeeAccountByIdStore.get(issue.createdBy as Ref<EmployeeAccount>)
+  $: account = $personAccountByIdStore.get(issue.createdBy as Ref<PersonAccount>)
 </script>
 
 <div class="popupPanel-body__aside-grid">

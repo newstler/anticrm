@@ -14,22 +14,22 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import contact, { Employee } from '@hcengineering/contact'
-  import type { Class, DocumentQuery, FindOptions, Ref } from '@hcengineering/core'
+  import contact, { Collaborator, Employee } from '@hcengineering/contact'
+  import type { Class, Doc, DocumentQuery, FindOptions, Ref } from '@hcengineering/core'
   import type { IntlString } from '@hcengineering/platform'
+  import presentation, { getClient } from '@hcengineering/presentation'
   import { ButtonKind, ButtonSize, IconSize, LabelAndProps } from '@hcengineering/ui'
-  import presentation from '@hcengineering/presentation'
-  import IconPerson from './icons/Person.svelte'
   import UserBox from './UserBox.svelte'
+  import IconPerson from './icons/Person.svelte'
 
-  export let _class: Ref<Class<Employee>> = contact.class.Employee
+  export let _class: Ref<Class<Employee>> = contact.mixin.Employee
   export let options: FindOptions<Employee> | undefined = undefined
   export let docQuery: DocumentQuery<Employee> | undefined = {
     active: true
   }
   export let label: IntlString
   export let placeholder: IntlString = presentation.string.Search
-  export let value: Ref<Employee> | null | undefined
+  export let value: Ref<Collaborator> | null | undefined
   export let allowDeselect = false
   export let titleDeselect: IntlString | undefined = undefined
   export let kind: ButtonKind = 'no-border'
@@ -41,6 +41,15 @@
   export let showTooltip: LabelAndProps | undefined = undefined
   export let showNavigate = true
   export let readonly = false
+
+  const client = getClient()
+
+  const filter = (it: Doc) => {
+    if (client.getHierarchy().hasMixin(it, contact.mixin.Employee)) {
+      return client.getHierarchy().as(it, contact.mixin.Employee).active
+    }
+    return true
+  }
 </script>
 
 <UserBox
@@ -63,4 +72,5 @@
   {showNavigate}
   {readonly}
   on:change
+  {filter}
 />

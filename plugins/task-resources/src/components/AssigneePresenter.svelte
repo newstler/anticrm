@@ -13,18 +13,18 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import contact, { Employee, getName } from '@hcengineering/contact'
+  import contact, { Collaborator, getName } from '@hcengineering/contact'
   import { Class, Doc, Ref, Space } from '@hcengineering/core'
   import { Task } from '@hcengineering/task'
   import { getClient } from '@hcengineering/presentation'
-  import { UsersPopup, employeeByIdStore } from '@hcengineering/contact-resources'
+  import { UsersPopup, collaboratorByIdStore } from '@hcengineering/contact-resources'
   import { AttributeModel } from '@hcengineering/view'
   import { eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import { getObjectPresenter } from '@hcengineering/view-resources'
   import { IntlString, getEmbeddedLabel } from '@hcengineering/platform'
   import task from '../plugin'
 
-  export let value: Ref<Employee> | Employee | null | undefined
+  export let value: Ref<Collaborator> | Collaborator | null | undefined
   export let issueId: Ref<Task>
   export let defaultClass: Ref<Class<Doc>> | undefined = undefined
   export let currentSpace: Ref<Space> | undefined = undefined
@@ -33,7 +33,7 @@
   export let defaultName: IntlString | undefined = undefined
   export let placeholderLabel: IntlString | undefined = undefined
 
-  $: employeeValue = typeof value === 'string' ? $employeeByIdStore.get(value) : value
+  $: employeeValue = typeof value === 'string' ? $collaboratorByIdStore.get(value) : value
 
   const client = getClient()
 
@@ -51,7 +51,7 @@
     }
   }
 
-  const handleAssigneeChanged = async (result: Employee | null | undefined) => {
+  const handleAssigneeChanged = async (result: Collaborator | null | undefined) => {
     if (!isEditable || result === undefined) {
       return
     }
@@ -85,7 +85,7 @@
     showPopup(
       UsersPopup,
       {
-        _class: contact.class.Employee,
+        _class: contact.mixin.Employee,
         selected: employeeValue?._id,
         docQuery: {
           active: true

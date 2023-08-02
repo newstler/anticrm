@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { Employee } from '@hcengineering/contact'
+  import { Collaborator } from '@hcengineering/contact'
   import { Ref } from '@hcengineering/core'
   import { ButtonKind, IconSize } from '@hcengineering/ui'
   import { PersonLabelTooltip } from '..'
   import EmployeeAttributePresenter from './EmployeeAttributePresenter.svelte'
 
-  export let value: Ref<Employee> | Ref<Employee>[] | null | undefined
+  export let value: Ref<Collaborator> | Ref<Collaborator>[] | null | undefined
   export let kind: ButtonKind = 'link'
   export let tooltipLabels: PersonLabelTooltip | undefined = undefined
-  export let onChange: ((value: Ref<Employee>) => void) | undefined = undefined
+  export let onChange: ((value: Ref<Collaborator>) => void) | undefined = undefined
   export let colorInherit: boolean = false
   export let accent: boolean = false
   export let inline: boolean = false

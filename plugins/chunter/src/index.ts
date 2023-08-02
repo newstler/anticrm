@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-import type { Employee } from '@hcengineering/contact'
+import type { Collaborator } from '@hcengineering/contact'
 import type { Account, AttachedDoc, Class, Doc, Ref, RelatedDocument, Space, Timestamp } from '@hcengineering/core'
 import { NotificationType } from '@hcengineering/notification'
 import type { Asset, Plugin, Resource } from '@hcengineering/platform'
@@ -66,7 +66,7 @@ export interface ThreadMessage extends ChunterMessage {
 export interface Message extends ChunterMessage {
   attachedTo: Ref<Space>
   attachedToClass: Ref<Class<Space>>
-  replies?: Ref<Employee>[]
+  replies?: Ref<Collaborator>[]
   repliesCount?: number
   lastReply?: Timestamp
 }

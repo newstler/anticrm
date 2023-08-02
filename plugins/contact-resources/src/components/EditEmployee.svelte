@@ -14,7 +14,7 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { Channel, Employee, EmployeeAccount, getFirstName, getLastName, Person } from '@hcengineering/contact'
+  import { Channel, Employee, PersonAccount, getFirstName, getLastName, Person } from '@hcengineering/contact'
   import { AccountRole, getCurrentAccount, Ref } from '@hcengineering/core'
   import login from '@hcengineering/login'
   import { getResource } from '@hcengineering/platform'
@@ -35,11 +35,11 @@
 
   const client = getClient()
 
-  const account = getCurrentAccount() as EmployeeAccount
+  const account = getCurrentAccount() as PersonAccount
 
   let avatarEditor: EditableAvatar
 
-  $: owner = account.employee === object._id
+  $: owner = account.person === object._id
   $: editable = !readonly && (account.role >= AccountRole.Maintainer || owner)
   let firstName = getFirstName(object.name)
   let lastName = getLastName(object.name)
@@ -49,7 +49,7 @@
 
   let email: string | undefined
   $: if (editable) {
-    client.findOne(contact.class.EmployeeAccount, { employee: (object as Employee)._id }).then((acc) => {
+    client.findOne(contact.class.PersonAccount, { person: (object as Employee)._id }).then((acc) => {
       email = acc?.email
     })
   }

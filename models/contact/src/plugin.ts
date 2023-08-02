@@ -36,8 +36,8 @@ export default mergeIds(contactId, contact, {
     OrganizationPresenter: '' as AnyComponent,
     Contacts: '' as AnyComponent,
     ContactsTabs: '' as AnyComponent,
-    EmployeeAccountPresenter: '' as AnyComponent,
-    EmployeeAccountRefPresenter: '' as AnyComponent,
+    PersonAccountPresenter: '' as AnyComponent,
+    PersonAccountRefPresenter: '' as AnyComponent,
     OrganizationEditor: '' as AnyComponent,
     EmployeePresenter: '' as AnyComponent,
     EmployeeRefPresenter: '' as AnyComponent,
@@ -58,7 +58,7 @@ export default mergeIds(contactId, contact, {
     ActivityChannelPresenter: '' as AnyComponent,
     EmployeeFilter: '' as AnyComponent,
     EmployeeFilterValuePresenter: '' as AnyComponent,
-    EmployeeAccountFilterValuePresenter: '' as AnyComponent
+    PersonAccountFilterValuePresenter: '' as AnyComponent
   },
   string: {
     Persons: '' as IntlString,
@@ -94,7 +94,8 @@ export default mergeIds(contactId, contact, {
     CurrentEmployee: '' as IntlString,
 
     ConfigLabel: '' as IntlString,
-    ConfigDescription: '' as IntlString
+    ConfigDescription: '' as IntlString,
+    Collaborator: '' as IntlString
   },
   completion: {
     PersonQuery: '' as Resource<ObjectSearchFactory>,

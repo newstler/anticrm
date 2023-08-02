@@ -16,7 +16,7 @@
 // To help typescript locate view plugin properly
 import automation, { AutomationSupport } from '@hcengineering/automation'
 import { Board, boardId, Card, CardCover, CommonBoardPreference, MenuPage } from '@hcengineering/board'
-import type { Employee } from '@hcengineering/contact'
+import type { Collaborator } from '@hcengineering/contact'
 import { Class, DOMAIN_MODEL, IndexKind, Markup, Ref, Timestamp, Type } from '@hcengineering/core'
 import {
   ArrOf,
@@ -88,11 +88,11 @@ export class TCard extends TTask implements Card {
   @Index(IndexKind.FullText)
     location?: string
 
-  @Prop(TypeRef(contact.class.Employee), board.string.Assignee)
-  declare assignee: Ref<Employee> | null
+  @Prop(TypeRef(contact.mixin.Collaborator), board.string.Assignee)
+  declare assignee: Ref<Collaborator> | null
 
-  @Prop(ArrOf(TypeRef(contact.class.Employee)), board.string.Members)
-    members?: Ref<Employee>[]
+  @Prop(ArrOf(TypeRef(contact.mixin.Collaborator)), board.string.Members)
+    members?: Ref<Collaborator>[]
 
   @Prop(TypeCardCover(), board.string.Cover)
     cover?: CardCover

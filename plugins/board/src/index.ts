@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-import { Employee } from '@hcengineering/contact'
+import { Collaborator } from '@hcengineering/contact'
 import type { Class, Doc, Markup, Ref, Timestamp, Type } from '@hcengineering/core'
 import type { Asset, IntlString, Plugin } from '@hcengineering/platform'
 import { plugin } from '@hcengineering/platform'
@@ -58,7 +58,7 @@ export interface Card extends Task {
 
   isArchived?: boolean
 
-  members?: Ref<Employee>[]
+  members?: Ref<Collaborator>[]
 
   location?: string
 

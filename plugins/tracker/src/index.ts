@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-import { Employee } from '@hcengineering/contact'
+import { Collaborator, Employee } from '@hcengineering/contact'
 import {
   AttachedDoc,
   Attribute,
@@ -48,7 +48,7 @@ export interface Project extends SpaceWithStates, IconProps {
   identifier: string // Project identifier
   sequence: number
   defaultIssueStatus: Ref<IssueStatus>
-  defaultAssignee?: Ref<Employee>
+  defaultAssignee?: Ref<Collaborator>
   defaultTimeReportDay: TimeReportDayType
 }
 
@@ -179,7 +179,7 @@ export interface IssueDraft {
   description: Markup
   status?: Ref<IssueStatus>
   priority: IssuePriority
-  assignee: Ref<Employee> | null
+  assignee: Ref<Collaborator> | null
   component: Ref<Component> | null
   space: Ref<Project>
   dueDate: Timestamp | null
@@ -207,7 +207,7 @@ export interface IssueTemplateData {
   description: Markup
   priority: IssuePriority
 
-  assignee: Ref<Employee> | null
+  assignee: Ref<Collaborator> | null
   component: Ref<Component> | null
 
   milestone?: Ref<Milestone> | null
@@ -248,7 +248,7 @@ export interface IssueTemplate extends Doc, IssueTemplateData {
 export interface TimeSpendReport extends AttachedDoc {
   attachedTo: Ref<Issue>
 
-  employee: Ref<Employee> | null
+  employee: Ref<Collaborator> | null
 
   date: Timestamp | null
   // Value in man days

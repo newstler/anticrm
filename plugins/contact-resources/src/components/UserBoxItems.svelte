@@ -13,23 +13,22 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import contact, { Employee } from '@hcengineering/contact'
-  import type { Class, DocumentQuery, IdMap, Ref } from '@hcengineering/core'
+  import contact, { Collaborator } from '@hcengineering/contact'
+  import type { Class, Doc, DocumentQuery, IdMap, Ref } from '@hcengineering/core'
   import type { IntlString } from '@hcengineering/platform'
   import { Label, showPopup, ActionIcon, IconClose, IconAdd, Icon } from '@hcengineering/ui'
   import type { IconSize } from '@hcengineering/ui'
   import { createEventDispatcher } from 'svelte'
   import plugin from '../plugin'
-  import { employeeByIdStore } from '../utils'
+  import { collaboratorByIdStore } from '../utils'
   import UserInfo from './UserInfo.svelte'
   import UsersPopup from './UsersPopup.svelte'
+  import { getClient } from '@hcengineering/presentation'
 
-  export let items: Ref<Employee>[] = []
-  export let readonlyItems: Ref<Employee>[] = []
-  export let _class: Ref<Class<Employee>> = contact.class.Employee
-  export let docQuery: DocumentQuery<Employee> | undefined = {
-    active: true
-  }
+  export let items: Ref<Collaborator>[] = []
+  export let readonlyItems: Ref<Collaborator>[] = []
+  export let _class: Ref<Class<Collaborator>> = contact.mixin.Employee
+  export let docQuery: DocumentQuery<Collaborator> | undefined = {}
 
   export let label: IntlString | undefined = undefined
   export let actionLabel: IntlString = plugin.string.AddMember
@@ -37,10 +36,12 @@
   export let width: string | undefined = undefined
   export let readonly: boolean = false
 
-  let persons: Employee[] = getPersons(items, $employeeByIdStore)
-  $: persons = getPersons(items, $employeeByIdStore)
-  let readonlyPersons: Employee[] = getPersons(readonlyItems, $employeeByIdStore)
-  $: readonlyPersons = getPersons(readonlyItems, $employeeByIdStore)
+  let persons: Collaborator[] = getPersons(items, $collaboratorByIdStore)
+  $: persons = getPersons(items, $collaboratorByIdStore)
+  let readonlyPersons: Collaborator[] = getPersons(readonlyItems, $collaboratorByIdStore)
+  $: readonlyPersons = getPersons(readonlyItems, $collaboratorByIdStore)
+
+  const client = getClient()
 
   const dispatch = createEventDispatcher()
 
@@ -55,7 +56,13 @@
         allowDeselect: false,
         selectedUsers: items,
         ignoreUsers: readonlyItems,
-        readonly
+        readonly,
+        filter: (it: Doc) => {
+          if (client.getHierarchy().hasMixin(it, contact.mixin.Employee)) {
+            return client.getHierarchy().as(it, contact.mixin.Employee).active
+          }
+          return true
+        }
       },
       evt.target as HTMLElement,
       undefined,
@@ -68,11 +75,11 @@
     )
   }
 
-  function getPersons (employees: Ref<Employee>[], employeeById: IdMap<Employee>) {
-    return employees.map((p) => employeeById.get(p)).filter((p) => p !== undefined) as Employee[]
+  function getPersons (employees: Ref<Collaborator>[], employeeById: IdMap<Collaborator>) {
+    return employees.map((p) => employeeById.get(p)).filter((p) => p !== undefined) as Collaborator[]
   }
 
-  const removePerson = (removed: Employee) => {
+  const removePerson = (removed: Collaborator) => {
     const newItems = items.filter((it) => it !== removed._id)
     dispatch('update', newItems)
   }

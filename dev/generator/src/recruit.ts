@@ -1,4 +1,4 @@
-import contact, { Channel, Employee, EmployeeAccount, Person } from '@hcengineering/contact'
+import contact, { Channel, PersonAccount, Person, Collaborator } from '@hcengineering/contact'
 import core, {
   AttachedData,
   Data,
@@ -48,9 +48,9 @@ export async function generateContacts (
 ): Promise<void> {
   const connection = await connect(transactorUrl, workspaceId)
 
-  const accounts = await connection.findAll(contact.class.EmployeeAccount, {})
+  const accounts = await connection.findAll(contact.class.PersonAccount, {})
   const accountIds = accounts.map((a) => a._id)
-  const emoloyeeIds = accounts.map((a) => a.employee)
+  const emoloyeeIds = accounts.map((a) => a.person)
 
   const account = faker.random.arrayElement(accounts)
 
@@ -78,14 +78,14 @@ export async function generateContacts (
 
 async function genVacansyApplicants (
   ctx: MeasureContext,
-  accountIds: Ref<EmployeeAccount>[],
+  accountIds: Ref<PersonAccount>[],
   options: RecruitOptions,
   i: number,
   client: TxOperations,
   minio: MinioService,
   workspaceId: WorkspaceId,
   candidates: Ref<Candidate>[],
-  emoloyeeIds: Ref<Employee>[]
+  emoloyeeIds: Ref<Collaborator>[]
 ): Promise<void> {
   const vacancy: Data<Vacancy> = {
     name: faker.company.companyName(),
@@ -144,7 +144,7 @@ async function genApplicant (
   ctx: MeasureContext,
   vacancyId: Ref<Vacancy>,
   candidateId: Ref<Candidate>,
-  emoloyeeIds: Ref<Employee>[],
+  emoloyeeIds: Ref<Collaborator>[],
   states: Ref<State>[],
   client: TxOperations,
   options: RecruitOptions,

@@ -15,8 +15,8 @@
 <script lang="ts">
   import { CalendarMode } from '@hcengineering/calendar-resources'
   import calendar from '@hcengineering/calendar-resources/src/plugin'
-  import { EmployeeAccount } from '@hcengineering/contact'
-  import { employeeByIdStore } from '@hcengineering/contact-resources'
+  import { PersonAccount } from '@hcengineering/contact'
+  import { collaboratorByIdStore } from '@hcengineering/contact-resources'
   import { DocumentQuery, getCurrentAccount, Ref } from '@hcengineering/core'
   import { Department, Staff } from '@hcengineering/hr'
   import { createQuery } from '@hcengineering/presentation'
@@ -31,7 +31,7 @@
 
   export let visibileNav = true
 
-  const accountEmployee = $employeeByIdStore.get((getCurrentAccount() as EmployeeAccount).employee)
+  const accountEmployee = $collaboratorByIdStore.get((getCurrentAccount() as PersonAccount).person)
   let accountStaff: Staff | undefined
 
   const accountStaffQ = createQuery()

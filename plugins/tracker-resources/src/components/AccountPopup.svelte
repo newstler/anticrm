@@ -13,8 +13,8 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { EmployeeAccount, formatName } from '@hcengineering/contact'
-  import { Avatar, employeeByIdStore } from '@hcengineering/contact-resources'
+  import { PersonAccount, formatName } from '@hcengineering/contact'
+  import { Avatar, collaboratorByIdStore } from '@hcengineering/contact-resources'
   import { getCurrentAccount } from '@hcengineering/core'
   import login, { loginId } from '@hcengineering/login'
   import { setMetadata } from '@hcengineering/platform'
@@ -35,8 +35,8 @@
     return []
   }
 
-  const account = getCurrentAccount() as EmployeeAccount
-  $: employee = $employeeByIdStore.get(account.employee)
+  const account = getCurrentAccount() as PersonAccount
+  $: employee = $collaboratorByIdStore.get(account.person)
 
   function selectCategory (sp: SettingsCategory): void {
     closePopup()

@@ -61,14 +61,17 @@
     showPopup(
       UsersPopup,
       {
-        _class: contact.class.Employee,
+        _class: contact.mixin.Employee,
         selectedUsers: members,
         allowDeselect: true,
         multiSelect: true,
-        docQuery: {
-          active: true
-        },
-        placeholder: intlSearchPh
+        placeholder: intlSearchPh,
+        filter: (it: Doc) => {
+          if (client.getHierarchy().hasMixin(it, contact.mixin.Employee)) {
+            return client.getHierarchy().as(it, contact.mixin.Employee).active
+          }
+          return true
+        }
       },
       eventToHTMLElement(event),
       undefined,

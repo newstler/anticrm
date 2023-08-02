@@ -222,7 +222,7 @@ export function getName (value: Contact): string {
 }
 
 function isEmployee (value: Contact): value is Employee {
-  return value._class === contactPlugin.class.Employee
+  return value._class === contactPlugin.mixin.Employee
 }
 
 function isPerson (value: Contact): value is Person {

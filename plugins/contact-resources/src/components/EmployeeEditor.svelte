@@ -13,14 +13,14 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { Employee } from '@hcengineering/contact'
+  import { Collaborator, Employee } from '@hcengineering/contact'
   import { DocumentQuery, Ref, RefTo } from '@hcengineering/core'
   import { IntlString } from '@hcengineering/platform'
   import contact from '../plugin'
   import { ButtonKind, ButtonSize } from '@hcengineering/ui'
   import EmployeeBox from './EmployeeBox.svelte'
 
-  export let value: Ref<Employee> | undefined
+  export let value: Ref<Collaborator> | undefined
   export let label: IntlString = contact.string.Employee
   export let onChange: (value: any) => void
   export let type: RefTo<Employee> | undefined
@@ -31,11 +31,9 @@
   export let readonly = false
   export let showNavigate = true
 
-  $: _class = type?.to ?? contact.class.Employee
+  $: _class = type?.to ?? contact.mixin.Employee
 
-  const query: DocumentQuery<Employee> = {
-    active: true
-  }
+  const query: DocumentQuery<Employee> = {}
 </script>
 
 <EmployeeBox

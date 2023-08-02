@@ -15,7 +15,7 @@
 -->
 <script lang="ts">
   import { Contact, getName } from '@hcengineering/contact'
-  import { Class, DocumentQuery, FindOptions, Hierarchy, Ref } from '@hcengineering/core'
+  import { Class, DocumentQuery, FindOptions, Hierarchy, Ref, Doc } from '@hcengineering/core'
   import { Asset, getEmbeddedLabel, IntlString } from '@hcengineering/platform'
   import { getClient, ObjectCreate } from '@hcengineering/presentation'
   import {
@@ -61,6 +61,9 @@
   export let showTooltip: LabelAndProps | undefined = undefined
   export let showNavigate = true
   export let id: string | undefined = undefined
+  export let filter: (it: Doc) => boolean = () => {
+    return true
+  }
 
   export let create: ObjectCreate | undefined = undefined
 
@@ -93,7 +96,8 @@
           selected: value,
           titleDeselect,
           placeholder,
-          create
+          create,
+          filter
         },
         !$$slots.content ? container : getEventPositionElement(ev),
         (result) => {

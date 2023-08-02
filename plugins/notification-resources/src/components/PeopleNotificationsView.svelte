@@ -15,8 +15,8 @@
 <script lang="ts">
   import { TxViewlet } from '@hcengineering/activity'
   import { ActivityKey } from '@hcengineering/activity-resources'
-  import { EmployeeAccount, getName } from '@hcengineering/contact'
-  import { Avatar, employeeByIdStore } from '@hcengineering/contact-resources'
+  import { PersonAccount, getName } from '@hcengineering/contact'
+  import { Avatar, collaboratorByIdStore } from '@hcengineering/contact-resources'
   import core, { Doc, TxCUD, TxProcessor } from '@hcengineering/core'
   import notification, { DocUpdates } from '@hcengineering/notification'
   import { getResource } from '@hcengineering/platform'
@@ -27,14 +27,14 @@
   import TxView from './TxView.svelte'
   import ArrowRight from './icons/ArrowRight.svelte'
 
-  export let value: EmployeeAccount
+  export let value: PersonAccount
   export let items: DocUpdates[]
   export let viewlets: Map<ActivityKey, TxViewlet>
   export let selected: boolean
 
   $: firstItem = items[0]
 
-  $: employee = $employeeByIdStore.get(value.employee)
+  $: employee = $collaboratorByIdStore.get(value.person)
 
   $: newTxes = items.reduce((acc, cur) => acc + cur.txes.filter((p) => p.isNew && p.modifiedBy === value._id).length, 0) // items.length
   const dispatch = createEventDispatcher()

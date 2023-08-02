@@ -19,13 +19,13 @@
   import { showPopup } from '@hcengineering/ui'
   import type { IconSize } from '@hcengineering/ui'
   import { createEventDispatcher } from 'svelte'
-  import { employeeByIdStore } from '../utils'
+  import { collaboratorByIdStore } from '../utils'
   import CombineAvatars from './CombineAvatars.svelte'
   import AddAvatar from './icons/AddAvatar.svelte'
   import UsersPopup from './UsersPopup.svelte'
 
   export let items: Ref<Employee>[] = []
-  export let _class: Ref<Class<Employee>> = contact.class.Employee
+  export let _class: Ref<Class<Employee>> = contact.mixin.Employee
   export let docQuery: DocumentQuery<Employee> | undefined = {
     active: true
   }
@@ -37,8 +37,8 @@
   export let limit: number = 6
   export let hideLimit: boolean = false
 
-  let persons: Employee[] = items.map((p) => $employeeByIdStore.get(p)).filter((p) => p !== undefined) as Employee[]
-  $: persons = items.map((p) => $employeeByIdStore.get(p)).filter((p) => p !== undefined) as Employee[]
+  let persons: Employee[] = items.map((p) => $collaboratorByIdStore.get(p)).filter((p) => p !== undefined) as Employee[]
+  $: persons = items.map((p) => $collaboratorByIdStore.get(p)).filter((p) => p !== undefined) as Employee[]
 
   const dispatch = createEventDispatcher()
 

@@ -98,7 +98,7 @@ persistence = {
 /**
  * @public
  */
-export function setPersistence (persistence_: YPersistence): void {
+export function setPersistence(persistence_: YPersistence): void {
   persistence = persistence_
 }
 
@@ -145,7 +145,7 @@ class WSSharedDoc extends Doc {
    * @param {Object | null} conn Origin is the connection that made the change
    */
   awarenessChangeHandler = (
-    { added, updated, removed }: { added: Array<number>, updated: Array<number>, removed: Array<number> },
+    { added, updated, removed }: { added: Array<number>; updated: Array<number>; removed: Array<number> },
     conn: WebSocket | null
   ): void => {
     const changedClients = added.concat(updated, removed)
@@ -170,7 +170,7 @@ class WSSharedDoc extends Doc {
     })
   }
 
-  constructor (readonly name: string) {
+  constructor(readonly name: string) {
     super({ gc: gcEnabled })
 
     this.awareness = new Awareness(this)
@@ -188,7 +188,7 @@ class WSSharedDoc extends Doc {
  * @param {boolean} gc - whether to allow gc on the doc (applies only when created)
  * @return {WSSharedDoc}
  */
-export function getYDoc (
+export function getYDoc(
   docId: string,
   token: Token,
   gc = true,
@@ -287,7 +287,7 @@ const send = (doc: WSSharedDoc, conn: any, m: Uint8Array): void => {
 
 const pingTimeout = 30000
 
-export function setupWSConnection (
+export function setupWSConnection(
   conn: WebSocket,
   req: any,
   documentId: string,
